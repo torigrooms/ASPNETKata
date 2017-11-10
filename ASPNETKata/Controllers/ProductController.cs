@@ -7,93 +7,119 @@ using System.Web.Mvc;
 using ASPNETKata.Models;
 using Dapper;
 using MySql.Data.MySqlClient;
+using System.Configuration;
 
 namespace ASPNETKata.Controllers
 {
-    public class ProductController : Controller
-    {
-        // GET: Product
-        public ActionResult Index()
-        {
 	        var connectionString = "Server=localhost;Database=Adventureworks;Uid=root;Pwd=password";
-	        using (var conn = new MySqlConnection(connectionString))
-	        {
-		        conn.Open();
-		        var list = conn.Query<Product>("SELECT * from Product");
-		        return View(list);
-	        }
-        }
+	public class ProductController : Controller
+	{
+		// GET: Product
+		public ActionResult Index()
+		{
+			{
+				conn.Open();
+				var list = conn.Query<Product>("SELECT * from Product ORDER BY ProductId DESC");
+				return View(list);
+			}
+		}
 
-        // GET: Product/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
+		// GET: Product/Details/5
+		public ActionResult Details(int id)
+		{
 
-        // GET: Product/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
+			using (var conn = new MySqlConnection(connectionString))
+			{
+				conn.Open();
+				var list = conn.Query<Product>("SELECT * from Product Where ProductId = @Id", new { Id = id });
+				return View(list.FirstOrDefault());
+			}
+		}
+		// GET: Product/Create
+		public ActionResult Create()
+		{
+			return View();
+		}
 
-        // POST: Product/Create
-        [HttpPost]
-        public ActionResult Create(FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add insert logic here
+		// POST: Product/Create
+		[HttpPost]
+		public ActionResult Create(FormCollection collection)
+		{
+			var name = collection["Name"];
+			var connectionString = "Server=localhost;Database=Adventureworks;Uid=root;Pwd=password";
+			using (var conn = new MySqlConnection(connectionString))
 
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
+			{
+				conn.Open();
 
-        // GET: Product/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
 
-        // POST: Product/Edit/5
-        [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add update logic here
+				{
+					// TODO: Add insert logic here
+					conn.Execute("INSERT INTO product (Name) VALUES (@Name)", new { Name = name });
+					return RedirectToAction("Index");
+				}
 
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
+			}
 
-        // GET: Product/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
+		}
 
-        // POST: Product/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
+		// GET: Product/Edit/5
+		public ActionResult Edit(int id)
+		{
+			var connectionString = ConfigurationManager.ConnectionStrings["Default"].ConnectionString;
 
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-    }
+			using (var conn = new MySqlConnection(connectionString))
+			{
+				conn.Open();
+				var list = conn.Query<Product>("SELECT * from Product Where ProductId = @Id", new { Id = id });
+				return View(list.FirstOrDefault());
+			}
+		}
+
+
+
+
+		// POST: Product/Edit/5
+		[HttpPost]
+		public ActionResult Edit(int id, FormCollection collection)
+		{
+			var name = collection["Name"];
+
+			var connectionString = ConfigurationManager.ConnectionStrings["Default"].ConnectionString;
+
+			using (var conn = new MySqlConnection(connectionString))
+			{
+				conn.Open();
+				conn.Execute("UPDATE product SET Name = @Name WHERE ProductId = @Id", new { Name = name, Id = id });
+				return RedirectToAction("Index");
+			}
+		}
+
+		// GET: Product/Delete/5
+		public ActionResult Delete(int id)
+		{
+			return View();
+		}
+
+		// POST: Product/Delete/5
+		[HttpPost]
+		public ActionResult Delete(int id, FormCollection collection)
+		{
+
+			{
+				var name = collection["Name"];
+
+				var connectionString = ConfigurationManager.ConnectionStrings["Default"].ConnectionString;
+
+				using (var conn = new MySqlConnection(connectionString))
+				{
+					conn.Open();
+					conn.Execute("DELETE FROM product WHERE productId = @Id", new { Id = id });
+					return RedirectToAction("Index");
+				}
+
+			}
+
+		}
+	}
 }
