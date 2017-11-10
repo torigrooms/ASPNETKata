@@ -13,7 +13,7 @@ namespace ASPNETKata.Controllers
 {
 	public class ProductController : Controller
 	{
-		// GET: Product
+		
 		public ActionResult Index()
 		{
 			var connectionString = "Server=localhost;Database=Adventureworks;Uid=root;Pwd=Twins@2016";
@@ -25,7 +25,7 @@ namespace ASPNETKata.Controllers
 			}
 		}
 
-		// GET: Product/Details/5
+		
 		public ActionResult Details(int id)
 		{
 			var connectionString = ConfigurationManager.ConnectionStrings["Default"].ConnectionString;
@@ -37,13 +37,13 @@ namespace ASPNETKata.Controllers
 				return View(list.FirstOrDefault());
 			}
 		}
-		// GET: Product/Create
+		
 		public ActionResult Create()
 		{
 			return View();
 		}
 
-		// POST: Product/Create
+		
 		[HttpPost]
 		public ActionResult Create(FormCollection collection)
 		{
@@ -56,7 +56,7 @@ namespace ASPNETKata.Controllers
 
 
 				{
-					// TODO: Add insert logic here
+					
 					conn.Execute("INSERT INTO product (Name) VALUES (@Name)", new { Name = name });
 					return RedirectToAction("Index");
 				}
@@ -65,7 +65,7 @@ namespace ASPNETKata.Controllers
 
 		}
 
-		// GET: Product/Edit/5
+		
 		public ActionResult Edit(int id)
 		{
 			var connectionString = ConfigurationManager.ConnectionStrings["Default"].ConnectionString;
@@ -81,7 +81,7 @@ namespace ASPNETKata.Controllers
 
 
 
-		// POST: Product/Edit/5
+		
 		[HttpPost]
 		public ActionResult Edit(int id, FormCollection collection)
 		{
@@ -97,13 +97,11 @@ namespace ASPNETKata.Controllers
 			}
 		}
 
-		// GET: Product/Delete/5
 		public ActionResult Delete(int id)
 		{
 			return View();
 		}
 
-		// POST: Product/Delete/5
 		[HttpPost]
 		public ActionResult Delete(int id, FormCollection collection)
 		{
