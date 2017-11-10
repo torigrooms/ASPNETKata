@@ -8,8 +8,8 @@ namespace ASPNETKata.Models
 	public class Product
 	{
 		public int ProductId { get; set; }
-		public Guid RowGuid { get; set; }
 		public string Name { get; set; }
+		/*
 		public string ProductNumber { get; set; }
 		public double ListPrice { get; set; }
 		public bool MakeFlag { get; set; }
@@ -21,5 +21,6 @@ namespace ASPNETKata.Models
 		public double StandardCost { get; set; }
 		public DateTime ModifiedDate { get; set; }
 		public DateTime SellStartDate { get; set; }
+		*/
 	}
 }

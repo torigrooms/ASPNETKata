@@ -11,12 +11,13 @@ using System.Configuration;
 
 namespace ASPNETKata.Controllers
 {
-	        var connectionString = "Server=localhost;Database=Adventureworks;Uid=root;Pwd=password";
 	public class ProductController : Controller
 	{
 		// GET: Product
 		public ActionResult Index()
 		{
+			var connectionString = "Server=localhost;Database=Adventureworks;Uid=root;Pwd=Twins@2016";
+			using (var conn = new MySqlConnection(connectionString))
 			{
 				conn.Open();
 				var list = conn.Query<Product>("SELECT * from Product ORDER BY ProductId DESC");
@@ -27,6 +28,7 @@ namespace ASPNETKata.Controllers
 		// GET: Product/Details/5
 		public ActionResult Details(int id)
 		{
+			var connectionString = ConfigurationManager.ConnectionStrings["Default"].ConnectionString;
 
 			using (var conn = new MySqlConnection(connectionString))
 			{
