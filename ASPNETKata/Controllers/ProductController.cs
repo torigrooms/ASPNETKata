@@ -1,125 +1,74 @@
-﻿using System;
+﻿using ASPNETKata.Models;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using ASPNETKata.Models;
-using Dapper;
 using MySql.Data.MySqlClient;
-using System.Configuration;
+using ASPNETKata.Shared;
 
 namespace ASPNETKata.Controllers
 {
 	public class ProductController : Controller
 	{
+		private readonly IProductRepository repo;
+
+		public ProductController(IProductRepository repo)
+		{
+			this.repo = repo;
+		}
 		
 		public ActionResult Index()
 		{
-			var connectionString = "Server=localhost;Database=Adventureworks;Uid=root;Pwd=Twins@2016";
-			using (var conn = new MySqlConnection(connectionString))
-			{
-				conn.Open();
-				var list = conn.Query<Product>("SELECT * from Product ORDER BY ProductId DESC");
-				return View(list);
-			}
+			var list = repo.GetProducts();
+			return View(list);
 		}
-
 		
 		public ActionResult Details(int id)
 		{
-			var connectionString = ConfigurationManager.ConnectionStrings["Default"].ConnectionString;
-
-			using (var conn = new MySqlConnection(connectionString))
-			{
-				conn.Open();
-				var list = conn.Query<Product>("SELECT * from Product Where ProductId = @Id", new { Id = id });
-				return View(list.FirstOrDefault());
-			}
+			var product = repo.GetDetails(id);
+			return View(product);
 		}
 		
 		public ActionResult Create()
 		{
 			return View();
 		}
-
 		
 		[HttpPost]
-		public ActionResult Create(FormCollection collection)
+		public ActionResult Create(Product product)
 		{
-			var name = collection["Name"];
-			var connectionString = "Server=localhost;Database=Adventureworks;Uid=root;Pwd=password";
-			using (var conn = new MySqlConnection(connectionString))
-
-			{
-				conn.Open();
-
-
-				{
-					
-					conn.Execute("INSERT INTO product (Name) VALUES (@Name)", new { Name = name });
-					return RedirectToAction("Index");
-				}
-
-			}
-
+			repo.InsertProduct(product);
+			return RedirectToAction("Index");
 		}
-
 		
 		public ActionResult Edit(int id)
 		{
-			var connectionString = ConfigurationManager.ConnectionStrings["Default"].ConnectionString;
-
-			using (var conn = new MySqlConnection(connectionString))
-			{
-				conn.Open();
-				var list = conn.Query<Product>("SELECT * from Product Where ProductId = @Id", new { Id = id });
-				return View(list.FirstOrDefault());
-			}
+			var product = repo.GetDetails(id);
+			return View(product);
 		}
-
-
-
-
 		
 		[HttpPost]
-		public ActionResult Edit(int id, FormCollection collection)
+		public ActionResult Edit(int id, Product product)
 		{
-			var name = collection["Name"];
-
-			var connectionString = ConfigurationManager.ConnectionStrings["Default"].ConnectionString;
-
-			using (var conn = new MySqlConnection(connectionString))
-			{
-				conn.Open();
-				conn.Execute("UPDATE product SET Name = @Name WHERE ProductId = @Id", new { Name = name, Id = id });
-				return RedirectToAction("Index");
-			}
+			product.ProductId = id;
+			repo.UpdateProduct(product);
+			return RedirectToAction("Index");
 		}
-
+		
 		public ActionResult Delete(int id)
 		{
-			return View();
+			var product = repo.GetDetails(id);
+			return View(product);
 		}
-
+		
 		[HttpPost]
-		public ActionResult Delete(int id, FormCollection collection)
+		public ActionResult Delete(int id, Product product)
 		{
-
-			{
-				var name = collection["Name"];
-
-				var connectionString = ConfigurationManager.ConnectionStrings["Default"].ConnectionString;
-
-				using (var conn = new MySqlConnection(connectionString))
-				{
-					conn.Open();
-					conn.Execute("DELETE FROM product WHERE productId = @Id", new { Id = id });
-					return RedirectToAction("Index");
-				}
-
-			}
-
+			repo.DeleteProduct(id);
+			return RedirectToAction("Index");
 		}
 	}
 }
