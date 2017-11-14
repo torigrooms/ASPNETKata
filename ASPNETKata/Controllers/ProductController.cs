@@ -50,7 +50,7 @@ namespace ASPNETKata.Controllers
 			return View(product);
 		}
 		
-		[HttpPost]
+		[HttpPut]
 		public ActionResult Edit(int id, Product product)
 		{
 			product.ProductId = id;
@@ -64,7 +64,7 @@ namespace ASPNETKata.Controllers
 			return View(product);
 		}
 		
-		[HttpPost]
+		[HttpDelete]
 		public ActionResult Delete(int id, Product product)
 		{
 			repo.DeleteProduct(id);
