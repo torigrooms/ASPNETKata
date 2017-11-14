@@ -61,7 +61,7 @@ namespace ASPNETKata.Controllers
 		public ActionResult Delete(int id)
 		{
 			var product = repo.GetDetails(id);
-			return View(product);
+			return View(id);
 		}
 		
 		[HttpDelete]
